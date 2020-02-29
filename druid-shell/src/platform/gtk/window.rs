@@ -136,6 +136,8 @@ impl WindowBuilder {
     pub fn build(self) -> Result<WindowHandle, Error> {
         assert_main_thread();
 
+        log::info!("in windowbuilder build");
+
         let handler = self
             .handler
             .expect("Tried to build a window without setting the handler");
@@ -268,6 +270,7 @@ impl WindowBuilder {
 
         drawing_area.connect_button_release_event(clone!(handle => move |_widget, button| {
             if let Some(state) = handle.state.upgrade() {
+                log::info!("in button release handler");
 
                 state.handler.borrow_mut().mouse_up(
                     &MouseEvent {
@@ -277,6 +280,7 @@ impl WindowBuilder {
                         button: get_mouse_button(button.get_button()),
                     },
                 );
+                log::info!("end of button release handler");
             }
 
             Inhibit(true)
@@ -304,6 +308,9 @@ impl WindowBuilder {
 
         drawing_area.connect_leave_notify_event(clone!(handle => move |_widget, crossing| {
             if let Some(state) = handle.state.upgrade() {
+
+                log::info!("In connect_leave_notify handler");
+                log::info!("window: {:#?}", state.window);
 
                 let pos = Point::from(crossing.get_position());
                 let mouse_event = MouseEvent {
