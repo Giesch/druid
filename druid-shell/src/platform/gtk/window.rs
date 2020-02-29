@@ -309,7 +309,7 @@ impl WindowBuilder {
         drawing_area.connect_leave_notify_event(clone!(handle => move |_widget, crossing| {
             if let Some(state) = handle.state.upgrade() {
 
-                log::info!("In connect_leave_notify handler");
+                log::info!("In leave notify handler");
                 log::info!("window: {:#?}", state.window);
 
                 let pos = Point::from(crossing.get_position());
@@ -320,16 +320,17 @@ impl WindowBuilder {
                     button: get_mouse_button_from_modifiers(crossing.get_state()),
                 };
 
-                if let Ok(mut handler) = state.handler.try_borrow_mut() {
-                    handler.mouse_move(&mouse_event);
-                } else {
-                    log::info!("handler borrow failed");
-                }
+                // if let Ok(mut handler) = state.handler.try_borrow_mut() {
+                //     handler.mouse_move(&mouse_event);
+                // } else {
+                //     log::info!("handler borrow failed");
+                // }
 
-                // state
-                //     .handler
-                //     .borrow_mut()
-                //     .mouse_move(&mouse_event);
+                state
+                    .handler
+                    .borrow_mut()
+                    .mouse_move(&mouse_event);
+
             }
 
             Inhibit(true)
