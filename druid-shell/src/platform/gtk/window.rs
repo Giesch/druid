@@ -320,10 +320,16 @@ impl WindowBuilder {
                     button: get_mouse_button_from_modifiers(crossing.get_state()),
                 };
 
-                state
-                    .handler
-                    .borrow_mut()
-                    .mouse_move(&mouse_event);
+                if let Ok(mut handler) = state.handler.try_borrow_mut() {
+                    handler.mouse_move(&mouse_event);
+                } else {
+                    log::info!("handler borrow failed");
+                }
+
+                // state
+                //     .handler
+                //     .borrow_mut()
+                //     .mouse_move(&mouse_event);
             }
 
             Inhibit(true)
